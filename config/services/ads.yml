@@ -1,0 +1,75 @@
+services:
+    yandex_direct.repository:
+        class: EO\YandexDirect\Repository\YandexDirectRepository
+        arguments:
+            - '@doctrine.dbal.default_connection'
+            - '@translator'
+
+    yandex_direct.grid.definition.factory.ads:
+        class: 'EO\YandexDirect\Grid\Definition\Factory\AdsGridDefinitionFactory'
+        parent: 'prestashop.core.grid.definition.factory.abstract_grid_definition'
+
+    yandex_direct.grid.query_builder.ads:
+        class: 'EO\YandexDirect\Grid\Query\AdsQueryBuilder'
+        parent: 'prestashop.core.grid.abstract_query_builder'
+        public: true
+        arguments:
+            - '@prestashop.core.query.doctrine_search_criteria_applicator'
+            - "@=service('prestashop.adapter.legacy.context').getContext().language.id"
+            - "@=service('prestashop.adapter.legacy.context').getContext().shop.id"
+            - "@=service('prestashop.adapter.legacy.context').getContext().shop.id_shop_group"
+            - '@prestashop.adapter.legacy.configuration'
+
+    yandex_direct.grid.data_provider.ads:
+        class: '%prestashop.core.grid.data.factory.doctrine_grid_data_factory%'
+        arguments:
+            - '@yandex_direct.grid.query_builder.ads'
+            - '@prestashop.core.hook.dispatcher'
+            - '@prestashop.core.grid.query.doctrine_query_parser'
+            - 'ads'
+
+    yandex_direct.grid.data.factory.ads:
+        class: 'EO\YandexDirect\Grid\Data\Factory\AdsGridDataFactory'
+        arguments:
+            - '@yandex_direct.grid.data_provider.ads'
+
+    yandex_direct.grid.factory.ads:
+        class: 'PrestaShop\PrestaShop\Core\Grid\GridFactory'
+        public: true
+        arguments:
+            - '@yandex_direct.grid.definition.factory.ads'
+            - '@yandex_direct.grid.data.factory.ads'
+            - '@prestashop.core.grid.filter.form_factory'
+            - '@prestashop.core.hook.dispatcher'
+
+    yandex_direct.form.data_provider.ads:
+        class: EO\YandexDirect\Form\AdsFormDataProvider
+        arguments:
+            - '@yandex_direct.repository'
+            - '@prestashop.core.admin.module.repository'
+
+    yandex_direct.form_handler.ads:
+        class: 'PrestaShop\PrestaShop\Core\Form\FormHandler'
+        arguments:
+            $formBuilder: '@=service("form.factory").createBuilder()'
+            $hookDispatcher: '@prestashop.core.hook.dispatcher'
+            $formDataProvider: '@yandex_direct.form.data_provider.ads'
+            $formTypes:
+                'ads': 'EO\YandexDirect\Form\Type\AdsType'
+            $hookName: 'AdminCmsWidget'
+
+    yandex_direct.form_type.ads:
+        class: EO\YandexDirect\Form\Type\AdsType
+        parent: 'form.type.translatable.aware'
+        public: true
+        arguments:
+            - "@router"
+        tags:
+            - { name: form.type }
+
+    yandex_direct.grid.command:
+        class: EO\YandexDirect\Command\YandexDirectCommand
+        tags:
+            - { name: 'console.command' }
+
+

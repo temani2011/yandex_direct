@@ -1,0 +1,4 @@
+api_log_prodcuts:
+    resource: "./routes/ads.yml"
+    prefix: /yandex-direct/ads
+

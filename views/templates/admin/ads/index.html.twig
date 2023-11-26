@@ -1,0 +1,168 @@
+{#**
+ * Copyright since 2007 PrestaShop SA and Contributors
+ * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License version 3.0
+ * that is bundled with this package in the file LICENSE.md.
+ * It is also available through the world-wide-web at this URL:
+ * https://opensource.org/licenses/AFL-3.0
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@prestashop.com so we can send you a copy immediately.
+ *
+ * @author    PrestaShop SA and Contributors <contact@prestashop.com>
+ * @copyright Since 2007 PrestaShop SA and Contributors
+ * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
+ *#}
+
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+
+{% block content %}
+    {% block quotes_list_panel %}
+        <div class="row">
+            <div class="col">
+                {{ form_start(grid.filter_form, {'attr': {'id': grid.id ~ '_filter_form', 'class': 'table-responsive'}}) }}
+                <div class="card js-grid-panel" id="{{ grid.id }}_grid_panel">
+                {% block grid_panel_header %}
+                    <div class="card-header js-grid-header">
+                    <h3 class="d-inline-block card-header-title">
+                        {{ grid.name }} ({{ grid.data.records_total }})
+                    </h3>
+                    {% block grid_actions_block %}
+                        <div class="d-inline-block float-right">
+                        {{ include('@PrestaShop/Admin/Common/Grid/Blocks/grid_actions.html.twig', {'grid': grid}) }}
+                        </div>
+                    {% endblock %}
+                    </div>
+                {% endblock %}
+
+                {% block grid_panel_body %}
+                    <div class="card-body">
+                    {% block grid_view_block %}
+                        <div class="row grid js-grid" id="{{ grid.id }}_grid" data-grid-id="{{ grid.id }}">
+                            <div class="col-sm">
+                                {% block grid_header_row %}
+                                <div class="row">
+                                    <div class="col-sm mb-3">
+                                        <div class="d-flex">
+                                            {{ form_widget(grid.filter_form['id_shop_group']) }}
+                                            <button class="btn btn-primary d-block float-right" type="submit">Применить</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    {% block grid_bulk_actions_block %}
+                                    <div class="col-sm">
+                                        <div class="row">
+                                            <div class="col-sm">
+                                                {{ include('@PrestaShop/Admin/Common/Grid/Blocks/bulk_actions.html.twig', {'grid': grid}) }}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm">
+                                                {{ include('@PrestaShop/Admin/Common/Grid/Blocks/bulk_actions_select_all.html.twig', {'grid': grid}) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endblock %}
+                                </div>
+                                {% endblock %}
+
+                                {% block grid_table_row %}
+                                    <div class="row">
+                                        <div class="col-sm">
+                                            <table class="grid-table js-grid-table table {% if is_ordering_column(grid) %}grid-ordering-column{% endif %} {% if grid.attributes.is_empty_state %}border-0{% endif %}"
+                                                id="{{ grid.id }}_grid_table"
+                                                data-query="{{ grid.data.query }}"
+                                            >
+                                            <thead class="thead-default">
+                                            {% block grid_table_head %}
+                                                {{ include('@PrestaShop/Admin/Common/Grid/Blocks/Table/headers_row.html.twig', {'grid': grid}) }}
+                                                {% if grid.filter_form|length > 1 %}
+                                                    <tr class="column-filters {% if 0 == grid.data.records_total and grid.filters is empty %}d-none{% endif %}">
+                                                        {% for column in grid.columns %}
+                                                            <td>
+                                                                {% if grid.column_filters[column.id] is defined or column.id == 'shop' %}
+                                                                    {% for filter_name in grid.column_filters[column.id] %}
+                                                                        {{ form_widget(grid.filter_form[filter_name]) }}
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                            </td>
+                                                        {% endfor %}
+                                                    </tr>
+                                                {% endif %}
+                                            {% endblock %}
+                                            </thead>
+                                            <tbody>
+                                            {% block grid_table_body %}
+                                                {% if grid.data.records is not empty %}
+                                                    {% for record in grid.data.records %}
+                                                        <tr class="{% if record.error is not empty %} table-danger {% endif %}">
+                                                        {% for column in grid.columns %}
+                                                            <td class="{{ column.type }}-type">
+                                                                {% if (column.id == 'entity_url') %}
+                                                                    <a href="{{ record.product_link }}" target="_blank">
+                                                                {% elseif (column.id == 'id_entity') %}
+                                                                    {% if record.entity_type == 'Веерка' %}
+                                                                        {% set entityUrl = url('admin_cms_pages_edit', {'cmsPageId': record.id_entity}) %}
+                                                                    {% elseif record.entity_type == 'Товар' %}
+                                                                        {% set entityUrl = url('admin_product_form', {'id': record.id_entity}) %}
+                                                                    {% elseif record.entity_type == 'Категория' %}
+                                                                        {% set entityUrl = url('admin_categories_edit', {'categoryId': record.id_entity}) %}
+                                                                    {% elseif record.entity_type == 'Бренд' %}
+                                                                        {% set entityUrl = url('admin_manufacturers_edit', {'manufacturerId': record.id_entity}) %}
+                                                                    {% endif %}
+                                                                    <a href="{{ entityUrl ?? '#' }}" target="_blank">
+                                                                {% endif %}
+                                                                    {{ column_content(record, column, grid) }}
+                                                                {% if (column.id in ['entity_url', 'id_entity']) %}
+                                                                    </a>
+                                                                {% endif %}
+                                                            </td>
+                                                        {% endfor %}
+                                                        </tr>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    {{ include('@PrestaShop/Admin/Common/Grid/Blocks/Table/empty_row.html.twig', {'grid': grid}) }}
+                                                {% endif %}
+                                            {% endblock %}
+                                            </tbody>
+                                            {% block grid_table_footer %}{% endblock %}
+                                            </table>
+                                        </div>
+                                    </div>
+                                {% endblock %}
+
+                                {% block grid_footer_row %}
+                                <div class="row">
+                                    <div class="col">
+                                    {{ include('@PrestaShop/Admin/Common/Grid/Blocks/pagination.html.twig', {'grid': grid}) }}
+                                    </div>
+                                </div>
+                                {% endblock %}
+                            </div>
+                            </div>
+
+                            {% block grid_extra_content %}{% endblock %}
+                    {% endblock %}
+                    </div>
+                {% endblock %}
+
+                {% block grid_panel_footer %}{% endblock %}
+                </div>
+
+                {% block grid_panel_extra_content %}{% endblock %}
+                {{ form_end(grid.filter_form) }}
+            </div>
+        </div>
+    {% endblock %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset('/modules/eo_yandex_direct/views/public/grid.bundle.js') }}"></script>
+    <script src="{{ asset('themes/default/js/bundle/pagination.js') }}"></script>
+{% endblock %}

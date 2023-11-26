@@ -1,0 +1,115 @@
+admin_yandex_direct_ads_list:
+    path: /
+    methods: [GET]
+    defaults:
+        _controller: 'EO\YandexDirect\Controller\Admin\AdsController::indexAction'
+        _legacy_controller: AdminYandexDirectAds
+        _legacy_link: AdminYandexDirectAds
+
+admin_yandex_direct_ads_search:
+    path: /
+    methods: [POST]
+    defaults:
+        _controller: 'EO\YandexDirect\Controller\Admin\AdsController::searchAction'
+        _legacy_controller: AdminYandexDirectAds
+        _legacy_link: AdminYandexDirectAds:search
+
+admin_yandex_direct_ads_check:
+    path: /check/{id}
+    methods: [POST]
+    defaults:
+        _controller: 'EO\YandexDirect\Controller\Admin\AdsController::checkAction'
+        _legacy_controller: AdminYandexDirectAds
+        _legacy_link: AdminYandexDirectAds:check
+    requirements:
+        id: \d+
+
+admin_yandex_direct_ads_sync:
+    path: /sync/{id}
+    methods: [POST]
+    defaults:
+        _controller: 'EO\YandexDirect\Controller\Admin\AdsController::syncAction'
+        _legacy_controller: AdminYandexDirectAds
+        _legacy_link: AdminYandexDirectAds:sync
+    requirements:
+        id: \d+
+
+admin_yandex_direct_ads_resume:
+    path: /resume/{id}
+    methods: [POST]
+    defaults:
+        _controller: 'EO\YandexDirect\Controller\Admin\AdsController::resumeAction'
+        _legacy_controller: AdminYandexDirectAds
+        _legacy_link: AdminYandexDirectAds:resume
+    requirements:
+        id: \d+
+
+admin_yandex_direct_ads_suspend:
+    path: /suspend/{id}
+    methods: [POST]
+    defaults:
+        _controller: 'EO\YandexDirect\Controller\Admin\AdsController::suspendAction'
+        _legacy_controller: AdminYandexDirectAds
+        _legacy_link: AdminYandexDirectAds:suspend
+    requirements:
+        id: \d+
+
+admin_yandex_direct_ads_edit:
+    path: /edit/{id}
+    methods: [GET]
+    defaults:
+        _controller: 'EO\YandexDirect\Controller\Admin\AdsController::editAction'
+        _legacy_controller: AdminYandexDirectAds
+        _legacy_link: AdminYandexDirectAds:edit
+    requirements:
+        id: \d+
+
+admin_yandex_direct_ads_edit_process:
+    path: /edit/{id}
+    methods: [POST]
+    defaults:
+        _controller: 'EO\YandexDirect\Controller\Admin\AdsController::editProcessAction'
+        _legacy_controller: AdminYandexDirectAds
+        _legacy_link: AdminYandexDirectAds:editProcess
+    requirements:
+        id: \d+
+
+admin_yandex_direct_ads_bulk_check:
+    path: /bulk-check
+    methods: [POST]
+    defaults:
+        _controller: 'EO\YandexDirect\Controller\Admin\AdsController::bulkCheckAction'
+        _legacy_controller: AdminYandexDirectAds
+        _legacy_link: AdminYandexDirectAds
+
+admin_yandex_direct_ads_bulk_sync:
+    path: /bulk-sync
+    methods: [POST]
+    defaults:
+        _controller: 'EO\YandexDirect\Controller\Admin\AdsController::bulkSyncAction'
+        _legacy_controller: AdminYandexDirectAds
+        _legacy_link: AdminYandexDirectAds
+
+admin_yandex_direct_ads_bulk_resume:
+    path: /bulk-resume
+    methods: [POST]
+    defaults:
+        _controller: 'EO\YandexDirect\Controller\Admin\AdsController::bulkResumeAction'
+        _legacy_controller: AdminYandexDirectAds
+        _legacy_link: AdminYandexDirectAds
+
+admin_yandex_direct_ads_bulk_suspend:
+    path: /bulk-suspend
+    methods: [POST]
+    defaults:
+        _controller: 'EO\YandexDirect\Controller\Admin\AdsController::bulkSuspendAction'
+        _legacy_controller: AdminYandexDirectAds
+        _legacy_link: AdminYandexDirectAds
+
+admin_yandex_direct_ads_bulk_export:
+    path: /bulk-export
+    methods: [POST]
+    defaults:
+        _controller: 'EO\YandexDirect\Controller\Admin\AdsController::bulkExportAction'
+        _legacy_controller: AdminYandexDirectAds
+        _legacy_link: AdminYandexDirectAds
